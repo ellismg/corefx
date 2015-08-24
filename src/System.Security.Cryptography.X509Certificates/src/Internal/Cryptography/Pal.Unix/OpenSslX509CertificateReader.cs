@@ -18,6 +18,7 @@ namespace Internal.Cryptography.Pal
         private static DateTimeFormatInfo s_validityDateTimeFormatInfo;
 
         private SafeX509Handle _cert;
+        private SafeEvpPkeyHandle _privateKey;
         private X500DistinguishedName _subjectName;
         private X500DistinguishedName _issuerName;
 
@@ -35,49 +36,9 @@ namespace Internal.Cryptography.Pal
             _cert = handle;
         }
 
-        internal unsafe OpenSslX509CertificateReader(byte[] data)
-        {
-            SafeX509Handle cert;
-
-            // If the first byte is a hyphen then this is likely PEM-encoded,
-            // otherwise it's DER-encoded (or not a certificate).
-            if (data[0] == '-')
-            {
-                using (SafeBioHandle bio = Interop.libcrypto.BIO_new(Interop.libcrypto.BIO_s_mem()))
-                {
-                    Interop.libcrypto.CheckValidOpenSslHandle(bio);
-
-                    Interop.libcrypto.BIO_write(bio, data, data.Length);
-                    cert = Interop.libcrypto.PEM_read_bio_X509_AUX(bio, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
-                }
-            }
-            else
-            {
-                cert = Interop.libcrypto.OpenSslD2I(Interop.libcrypto.d2i_X509, data);
-            }
-
-            Interop.libcrypto.CheckValidOpenSslHandle(cert);
-
-            // X509_check_purpose has the effect of populating the sha1_hash value,
-            // and other "initialize" type things.
-            bool init = Interop.libcrypto.X509_check_purpose(cert, -1, 0);
-
-            if (!init)
-            {
-                throw Interop.libcrypto.CreateOpenSslCryptographicException();
-            }
-
-            _cert = cert;
-        }
-
         public bool HasPrivateKey
         {
-            get { return false; }
-        }
-
-        public AsymmetricAlgorithm PrivateKey
-        {
-            get { return null; }
+            get { return _privateKey != null; }
         }
 
         public IntPtr Handle
@@ -104,7 +65,7 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                return Interop.NativeCrypto.GetX509Thumbprint(_cert);
+                return Interop.Crypto.GetX509Thumbprint(_cert);
             }
         }
 
@@ -112,7 +73,7 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                IntPtr oidPtr = Interop.NativeCrypto.GetX509PublicKeyAlgorithm(_cert);
+                IntPtr oidPtr = Interop.Crypto.GetX509PublicKeyAlgorithm(_cert);
                 return Interop.libcrypto.OBJ_obj2txt_helper(oidPtr);
             }
         }
@@ -121,7 +82,7 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                return Interop.NativeCrypto.GetX509PublicKeyParameterBytes(_cert);
+                return Interop.Crypto.GetX509PublicKeyParameterBytes(_cert);
             }
         }
 
@@ -129,8 +90,8 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                IntPtr keyBytesPtr = Interop.NativeCrypto.GetX509PublicKeyBytes(_cert);
-                return Interop.NativeCrypto.GetAsn1StringBytes(keyBytesPtr);
+                IntPtr keyBytesPtr = Interop.Crypto.GetX509PublicKeyBytes(_cert);
+                return Interop.Crypto.GetAsn1StringBytes(keyBytesPtr);
             }
         }
 
@@ -139,7 +100,7 @@ namespace Internal.Cryptography.Pal
             get
             {
                 IntPtr serialNumberPtr = Interop.libcrypto.X509_get_serialNumber(_cert);
-                byte[] serial = Interop.NativeCrypto.GetAsn1StringBytes(serialNumberPtr);
+                byte[] serial = Interop.Crypto.GetAsn1StringBytes(serialNumberPtr);
 
                 // Windows returns this in BigInteger Little-Endian,
                 // OpenSSL returns this in BigInteger Big-Endian.
@@ -152,7 +113,7 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                IntPtr oidPtr = Interop.NativeCrypto.GetX509SignatureAlgorithm(_cert);
+                IntPtr oidPtr = Interop.Crypto.GetX509SignatureAlgorithm(_cert);
                 return Interop.libcrypto.OBJ_obj2txt_helper(oidPtr);
             }
         }
@@ -161,7 +122,7 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                return ExtractValidityDateTime(Interop.NativeCrypto.GetX509NotAfter(_cert));
+                return ExtractValidityDateTime(Interop.Crypto.GetX509NotAfter(_cert));
             }
         }
 
@@ -169,7 +130,7 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                return ExtractValidityDateTime(Interop.NativeCrypto.GetX509NotBefore(_cert));
+                return ExtractValidityDateTime(Interop.Crypto.GetX509NotBefore(_cert));
             }
         }
 
@@ -182,7 +143,7 @@ namespace Internal.Cryptography.Pal
         {
             get
             {
-                int version = Interop.NativeCrypto.GetX509Version(_cert);
+                int version = Interop.Crypto.GetX509Version(_cert);
 
                 if (version < 0)
                 {
@@ -257,7 +218,7 @@ namespace Internal.Cryptography.Pal
 
                     Interop.libcrypto.CheckValidOpenSslHandle(dataPtr);
 
-                    byte[] extData = Interop.NativeCrypto.GetAsn1StringBytes(dataPtr);
+                    byte[] extData = Interop.Crypto.GetAsn1StringBytes(dataPtr);
                     bool critical = Interop.libcrypto.X509_EXTENSION_get_critical(ext);
                     X509Extension extension = new X509Extension(oid, extData, critical);
 
@@ -268,14 +229,32 @@ namespace Internal.Cryptography.Pal
             }
         }
 
-        public void SetPrivateKey(AsymmetricAlgorithm privateKey, AsymmetricAlgorithm publicKey)
+        internal void SetPrivateKey(SafeEvpPkeyHandle privateKey)
         {
-            throw new NotImplementedException();
+            _privateKey = privateKey;
+        }
+
+        internal SafeEvpPkeyHandle PrivateKeyHandle
+        {
+            get { return _privateKey; }
+        }
+
+        public RSA GetRSAPrivateKey()
+        {
+            if (_privateKey == null || _privateKey.IsInvalid)
+            {
+                return null;
+            }
+
+            using (SafeRsaHandle rsaHandle = Interop.libcrypto.EVP_PKEY_get1_RSA(_privateKey))
+            {
+                return new RSAOpenSsl(rsaHandle.DangerousGetHandle());
+            }
         }
 
         public string GetNameInfo(X509NameType nameType, bool forIssuer)
         {
-            using (SafeBioHandle bioHandle = Interop.NativeCrypto.GetX509NameInfo(_cert, (int)nameType, forIssuer))
+            using (SafeBioHandle bioHandle = Interop.Crypto.GetX509NameInfo(_cert, (int)nameType, forIssuer))
             {
                 if (bioHandle.IsInvalid)
                 {
@@ -298,10 +277,25 @@ namespace Internal.Cryptography.Pal
 
         public void AppendPrivateKeyInfo(StringBuilder sb)
         {
+            if (!HasPrivateKey)
+            {
+                return;
+            }
+
+            // There's nothing really to say about the key, just acknowledge there is one.
+            sb.AppendLine();
+            sb.AppendLine();
+            sb.AppendLine("[Private Key]");
         }
 
         public void Dispose()
         {
+            if (_privateKey != null)
+            {
+                _privateKey.Dispose();
+                _privateKey = null;
+            }
+
             if (_cert != null)
             {
                 _cert.Dispose();
@@ -309,17 +303,31 @@ namespace Internal.Cryptography.Pal
             }
         }
 
+        internal OpenSslX509CertificateReader DuplicateHandles()
+        {
+            SafeX509Handle certHandle = Interop.libcrypto.X509_dup(_cert);
+            OpenSslX509CertificateReader duplicate = new OpenSslX509CertificateReader(certHandle);
+
+            if (_privateKey != null)
+            {
+                SafeEvpPkeyHandle keyHandle = SafeEvpPkeyHandle.DuplicateHandle(_privateKey);
+                duplicate.SetPrivateKey(keyHandle);
+            }
+
+            return duplicate;
+        }
+
         private static X500DistinguishedName LoadX500Name(IntPtr namePtr)
         {
             Interop.libcrypto.CheckValidOpenSslHandle(namePtr);
 
-            byte[] buf = Interop.NativeCrypto.GetX509NameRawBytes(namePtr);
+            byte[] buf = Interop.Crypto.GetX509NameRawBytes(namePtr);
             return new X500DistinguishedName(buf);
         }
 
         private static DateTime ExtractValidityDateTime(IntPtr validityDatePtr)
         {
-            byte[] bytes = Interop.NativeCrypto.GetAsn1StringBytes(validityDatePtr);
+            byte[] bytes = Interop.Crypto.GetAsn1StringBytes(validityDatePtr);
 
             // RFC 5280 (X509v3 - https://tools.ietf.org/html/rfc5280)
             // states that the validity times are either UTCTime:YYMMDDHHMMSSZ (13 bytes)

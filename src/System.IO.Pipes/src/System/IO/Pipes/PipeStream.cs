@@ -26,7 +26,6 @@ namespace System.IO.Pipes
         private PipeDirection _pipeDirection;
         private int _outBufferSize;
         private PipeState _state;
-        private StreamAsyncHelper _streamAsyncHelper;
 
         protected PipeStream(PipeDirection direction, int bufferSize)
         {
@@ -87,7 +86,6 @@ namespace System.IO.Pipes
             _isMessageComplete = true;
 
             _state = PipeState.WaitingToConnect;
-            _streamAsyncHelper = new StreamAsyncHelper(this);
         }
 
         // Once a PipeStream has a handle ready, it should call this method to set up the PipeStream.  If
@@ -142,7 +140,7 @@ namespace System.IO.Pipes
         public override Task<int> ReadAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             if (buffer == null)
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException("buffer", SR.ArgumentNull_Buffer);
             if (offset < 0)
                 throw new ArgumentOutOfRangeException("offset", SR.ArgumentOutOfRange_NeedNonNegNum);
             if (count < 0)
@@ -200,7 +198,7 @@ namespace System.IO.Pipes
         public override Task WriteAsync(byte[] buffer, int offset, int count, CancellationToken cancellationToken)
         {
             if (buffer == null)
-                throw new ArgumentNullException("buffer");
+                throw new ArgumentNullException("buffer", SR.ArgumentNull_Buffer);
             if (offset < 0)
                 throw new ArgumentOutOfRangeException("offset", SR.ArgumentOutOfRange_NeedNonNegNum);
             if (count < 0)

@@ -107,9 +107,9 @@ namespace System.Net.Http
         private object _lockObject = new object();
         private bool _doManualDecompressionCheck = false;
         private WinInetProxyHelper _proxyHelper = null;
-        private bool _automaticRedirection = true;
-        private int _maxAutomaticRedirections = 50;
-        private DecompressionMethods _automaticDecompression = DecompressionMethods.Deflate | DecompressionMethods.GZip;
+        private bool _automaticRedirection = HttpHandlerDefaults.DefaultAutomaticRedirection;
+        private int _maxAutomaticRedirections = HttpHandlerDefaults.DefaultMaxAutomaticRedirections;
+        private DecompressionMethods _automaticDecompression = HttpHandlerDefaults.DefaultAutomaticDecompression;
         private CookieUsePolicy _cookieUsePolicy = CookieUsePolicy.UseInternalCookieStoreOnly;
         private CookieContainer _cookieContainer = null;
 
@@ -717,6 +717,17 @@ namespace System.Net.Http
                     }
 
                     state.RequestMessage.RequestUri = redirectUri;
+                    
+                    // Redirection to a new uri may require a new connection through a potentially different proxy.
+                    // If so, we will need to respond to additional 407 proxy auth demands and re-attach any
+                    // proxy credentials. The ProcessResponse() method looks at the state.LastStatusCode
+                    // before attaching proxy credentials and marking the HTTP request to be re-submitted.
+                    // So we need to reset the LastStatusCode remembered. Otherwise, it will see additional 407
+                    // responses as an indication that proxy auth failed and won't retry the HTTP request.
+                    if (state.LastStatusCode == HttpStatusCode.ProxyAuthenticationRequired)
+                    {
+                        state.LastStatusCode = 0;
+                    }
 
                     // For security reasons, we drop the server credential if it is a 
                     // NetworkCredential.  But we allow credentials in a CredentialCache
@@ -1077,11 +1088,15 @@ namespace System.Net.Http
 
             if (state.CancellationToken.IsCancellationRequested)
             {
-                state.Tcs.TrySetCanceled();
+                state.Tcs.TrySetCanceled(state.CancellationToken);
                 return;
             }
 
-            var cancellationTokenRegistration = state.CancellationToken.Register(() => { state.Tcs.TrySetCanceled(); });
+            var cancellationTokenRegistration = state.CancellationToken.Register(s =>
+            {
+                RequestState rs = (RequestState)s;
+                rs.Tcs.TrySetCanceled(rs.CancellationToken);
+            }, state);
 
             try
             {
@@ -1147,14 +1162,13 @@ namespace System.Net.Http
 
                 uint proxyAuthScheme = 0;
                 uint serverAuthScheme = 0;
-                HttpStatusCode lastStatusCode = 0;
                 bool retryRequest = false;
 
                 do
                 {
                     state.CancellationToken.ThrowIfCancellationRequested();
 
-                    PreAuthenticateRequest(state, requestHandle, proxyAuthScheme, ref lastStatusCode);
+                    PreAuthenticateRequest(state, requestHandle, proxyAuthScheme);
 
                     // Send a request.
                     if (!Interop.WinHttp.WinHttpSendRequest(
@@ -1176,7 +1190,7 @@ namespace System.Net.Http
                         await state.RequestMessage.Content.CopyToAsync(
                             requestStream,
                             state.TransportContext).ConfigureAwait(false);
-                        requestStream.Flush();
+                        requestStream.EndUpload();
                     }
 
                     state.CancellationToken.ThrowIfCancellationRequested();
@@ -1211,7 +1225,6 @@ namespace System.Net.Http
                             requestHandle,
                             ref proxyAuthScheme,
                             ref serverAuthScheme,
-                            ref lastStatusCode,
                             out retryRequest);
                     }
                 } while (retryRequest);
@@ -1276,7 +1289,6 @@ namespace System.Net.Http
             SafeWinHttpHandle requestHandle,
             ref uint proxyAuthScheme,
             ref uint serverAuthScheme,
-            ref HttpStatusCode lastStatusCode,
             out bool retryRequest)
         {
             retryRequest = false;
@@ -1293,14 +1305,14 @@ namespace System.Net.Http
             switch (statusCode)
             {
                 case HttpStatusCode.Unauthorized:
-                    if (state.ServerCredentials == null || lastStatusCode == HttpStatusCode.Unauthorized)
+                    if (state.ServerCredentials == null || state.LastStatusCode == HttpStatusCode.Unauthorized)
                     {
                         // Either we don't have server credentials or we already tried 
                         // to set the credentials and it failed before.
                         // So we will let the 401 be the final status code returned.
                         break;
                     }
-                    lastStatusCode = statusCode;
+                    state.LastStatusCode = statusCode;
 
                     // Determine authorization scheme to use. We ignore the firstScheme
                     // parameter which is included in the supportedSchemes flags already.
@@ -1337,12 +1349,12 @@ namespace System.Net.Http
                     break;
 
                 case HttpStatusCode.ProxyAuthenticationRequired:
-                    if (lastStatusCode == HttpStatusCode.ProxyAuthenticationRequired)
+                    if (state.LastStatusCode == HttpStatusCode.ProxyAuthenticationRequired)
                     {
                         // We tried already to set the credentials.
                         break;
                     }
-                    lastStatusCode = statusCode;
+                    state.LastStatusCode = statusCode;
 
                     // Determine authorization scheme to use. We ignore the firstScheme
                     // parameter which is included in the supportedSchemes flags already.
@@ -1381,8 +1393,7 @@ namespace System.Net.Http
         private void PreAuthenticateRequest(
             RequestState state,
             SafeWinHttpHandle requestHandle,
-            uint proxyAuthScheme,
-            ref HttpStatusCode lastStatusCode)
+            uint proxyAuthScheme)
         {
             // Set proxy credentials if we have them.
             // If a proxy authentication challenge was responded to, reset
@@ -1416,7 +1427,7 @@ namespace System.Net.Http
                         state.RequestMessage.RequestUri,
                         authScheme,
                         Interop.WinHttp.WINHTTP_AUTH_TARGET_SERVER);
-                    lastStatusCode = HttpStatusCode.Unauthorized; // Remember we already set the creds.
+                    state.LastStatusCode = HttpStatusCode.Unauthorized; // Remember we already set the creds.
                 }
             }
         }
@@ -2056,7 +2067,7 @@ namespace System.Net.Http
             if (state.CancellationToken.IsCancellationRequested)
             {
                 // If the exception was due to the cancellation token being canceled, throw cancellation exception.
-                state.Tcs.TrySetCanceled();
+                state.Tcs.TrySetCanceled(state.CancellationToken);
             }
             else if (ex is WinHttpException || ex is IOException)
             {
@@ -2151,6 +2162,8 @@ namespace System.Net.Http
             public IWebProxy Proxy { get; set; }
 
             public ICredentials ServerCredentials { get; set; }
+            
+            public HttpStatusCode LastStatusCode { get; set; }
         }
     }
 }

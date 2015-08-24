@@ -1,4 +1,7 @@
-﻿using System.Collections;
+﻿// Copyright (c) Microsoft. All rights reserved.
+// Licensed under the MIT license. See LICENSE file in the project root for full license information.
+
+using System.Collections;
 using System.Collections.Generic;
 using Xunit;
 
@@ -48,98 +51,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        public void ListLastChecksAll()
-        {
-            var source = Enumerable.Range(0, 10).ToList();
-            var pred = new CountedFunction<int, bool>(i => i < 7);
-            Assert.Equal(6, source.Last(pred.Func));
-            Assert.Equal(10, pred.Calls);
-        }
-
-        [Fact]
-        public void MinDoubleChecksAll()
-        {
-            var tracker = new TrackingEnumerable(10);
-            var source = tracker.Select(i => i == 5 ? double.NaN : (double)i);
-            Assert.True(double.IsNaN(source.Min()));
-            Assert.Equal(10, tracker.Moves);
-        }
-
-        [Fact]
-        void MinNullableDoubleChecksAll()
-        {
-            var tracker = new TrackingEnumerable(10);
-            var source = tracker.Select(i => (double?)(i == 5 ? double.NaN : (double)i));
-            Assert.True(double.IsNaN(source.Min().GetValueOrDefault()));
-            Assert.Equal(10, tracker.Moves);
-        }
-
-        [Fact]
-        public void MinSingleChecksAll()
-        {
-            var tracker = new TrackingEnumerable(10);
-            var source = tracker.Select(i => i == 5 ? float.NaN : (float)i);
-            Assert.True(float.IsNaN(source.Min()));
-            Assert.Equal(10, tracker.Moves);
-        }
-
-        [Fact]
-        void MinNullableSingleChecksAll()
-        {
-            var tracker = new TrackingEnumerable(10);
-            var source = tracker.Select(i => (float?)(i == 5 ? float.NaN : (float)i));
-            Assert.True(float.IsNaN(source.Min().GetValueOrDefault()));
-            Assert.Equal(10, tracker.Moves);
-        }
-
-        [Fact]
-        void SingleWithPredicateChecksAll()
-        {
-            var tracker = new TrackingEnumerable(10);
-            var pred = new CountedFunction<int, bool>(i => i > 2);
-            Assert.Throws<InvalidOperationException>(() => tracker.Single(pred.Func));
-            Assert.Equal(10, tracker.Moves);
-            Assert.Equal(10, pred.Calls);
-        }
-
-        [Fact]
-        void SingleOrDefaultWithPredicateChecksAll()
-        {
-            var tracker = new TrackingEnumerable(10);
-            var pred = new CountedFunction<int, bool>(i => i > 2);
-            Assert.Throws<InvalidOperationException>(() => tracker.SingleOrDefault(pred.Func));
-            Assert.Equal(10, tracker.Moves);
-            Assert.Equal(10, pred.Calls);
-        }
-
-        [Fact]
-        void SingleWithPredicateDifferentToWhereFollowedBySingle()
-        {
-            var tracker0 = new TrackingEnumerable(10);
-            var pred0 = new CountedFunction<int, bool>(i => i > 2);
-            Assert.Throws<InvalidOperationException>(() => tracker0.Single(pred0.Func));
-            var tracker1 = new TrackingEnumerable(10);
-            var pred1 = new CountedFunction<int, bool>(i => i > 2);
-            Assert.Throws<InvalidOperationException>(() => tracker1.Where(pred1.Func).Single());
-            Assert.NotEqual(tracker0.Moves, tracker1.Moves);
-            Assert.NotEqual(pred0.Calls, pred1.Calls);
-        }
-
-        [Fact]
-        void SingleOrDefaultWithPredicateDifferentToWhereFollowedBySingleOrDefault()
-        {
-            var tracker0 = new TrackingEnumerable(10);
-            var pred0 = new CountedFunction<int, bool>(i => i > 2);
-            Assert.Throws<InvalidOperationException>(() => tracker0.SingleOrDefault(pred0.Func));
-            var tracker1 = new TrackingEnumerable(10);
-            var pred1 = new CountedFunction<int, bool>(i => i > 2);
-            Assert.Throws<InvalidOperationException>(() => tracker1.Where(pred1.Func).SingleOrDefault());
-            Assert.NotEqual(tracker0.Moves, tracker1.Moves);
-            Assert.NotEqual(pred0.Calls, pred1.Calls);
-        }
-
-        [Fact]
-        [ActiveIssue(2349)]
         public void ListLastDoesntCheckAll()
         {
             var source = Enumerable.Range(0, 10).ToList();
@@ -149,7 +60,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         public void MinDoubleDoesntCheckAll()
         {
             var tracker = new TrackingEnumerable(10);
@@ -159,7 +69,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         void MinNullableDoubleDoesntCheckAll()
         {
             var tracker = new TrackingEnumerable(10);
@@ -169,7 +78,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         public void MinSingleDoesntCheckAll()
         {
             var tracker = new TrackingEnumerable(10);
@@ -179,7 +87,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         void MinNullableSingleDoesntCheckAll()
         {
             var tracker = new TrackingEnumerable(10);
@@ -189,7 +96,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         void SingleWithPredicateDoesntCheckAll()
         {
             var tracker = new TrackingEnumerable(10);
@@ -200,7 +106,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         void SingleOrDefaultWithPredicateDoesntCheckAll()
         {
             var tracker = new TrackingEnumerable(10);
@@ -211,7 +116,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         void SingleWithPredicateWorksLikeWhereFollowedBySingle()
         {
             var tracker0 = new TrackingEnumerable(10);
@@ -225,7 +129,6 @@ namespace System.Linq.Tests
         }
 
         [Fact]
-        [ActiveIssue(2349)]
         void SingleOrDefaultWithPredicateWorksLikeWhereFollowedBySingleOrDefault()
         {
             var tracker0 = new TrackingEnumerable(10);

@@ -16,7 +16,7 @@ namespace System.IO
         public override void CopyFile(string sourceFullPath, string destFullPath, bool overwrite)
         {
             Interop.mincore.SECURITY_ATTRIBUTES secAttrs = default(Interop.mincore.SECURITY_ATTRIBUTES);
-            int errorCode = Helpers.CopyFile(sourceFullPath, destFullPath, !overwrite);
+            int errorCode = Interop.mincore.CopyFile(sourceFullPath, destFullPath, !overwrite);
 
             if (errorCode != Interop.mincore.Errors.ERROR_SUCCESS)
             {
@@ -27,7 +27,7 @@ namespace System.IO
                     // For a number of error codes (sharing violation, path 
                     // not found, etc) we don't know if the problem was with
                     // the source or dest file.  Try reading the source file.
-                    using (SafeFileHandle handle = Helpers.UnsafeCreateFile(sourceFullPath, Win32FileStream.GENERIC_READ, FileShare.Read, ref secAttrs, FileMode.Open, 0, IntPtr.Zero))
+                    using (SafeFileHandle handle = Interop.mincore.UnsafeCreateFile(sourceFullPath, Win32FileStream.GENERIC_READ, FileShare.Read, ref secAttrs, FileMode.Open, 0, IntPtr.Zero))
                     {
                         if (handle.IsInvalid)
                             fileName = sourceFullPath;
@@ -53,11 +53,7 @@ namespace System.IO
             if (length >= 2 && PathHelpers.EndsInDirectorySeparator(fullPath))
                 length--;
 
-            int lengthRoot = PathHelpers.GetRootLength(fullPath);
-
-            // For UNC paths that are only // or /// 
-            if (length == 2 && PathHelpers.IsDirectorySeparator(fullPath[1]))
-                throw new IOException(SR.Format(SR.IO_CannotCreateDirectory, fullPath));
+            int lengthRoot = PathInternal.GetRootLength(fullPath);
 
             // We can save a bunch of work if the directory we want to create already exists.  This also
             // saves us in the case where sub paths are inaccessible (due to ERROR_ACCESS_DENIED) but the
@@ -90,7 +86,7 @@ namespace System.IO
                     else
                         somepathexists = true;
 
-                    while (i > lengthRoot && !PathHelpers.IsDirectorySeparator(fullPath[i])) i--;
+                    while (i > lengthRoot && !PathInternal.IsDirectorySeparator(fullPath[i])) i--;
                     i--;
                 }
             }
@@ -109,7 +105,7 @@ namespace System.IO
             {
                 String name = stackDir[stackDir.Count - 1];
                 stackDir.RemoveAt(stackDir.Count - 1);
-                if (name.Length >= Interop.mincore.MAX_DIRECTORY_PATH)
+                if (PathInternal.IsDirectoryTooLong(name))
                     throw new PathTooLongException(SR.IO_PathTooLong);
                 r = Interop.mincore.CreateDirectory(name, ref secAttrs);
                 if (!r && (firstError == 0))
@@ -271,7 +267,7 @@ namespace System.IO
                 }
 
                 // Copy the information to data
-                data.PopulateFrom(findData);
+                data.PopulateFrom(ref findData);
             }
             else
             {
@@ -377,7 +373,9 @@ namespace System.IO
 
         public override IFileSystemObject GetFileSystemInfo(string fullPath, bool asDirectory)
         {
-            return new Win32FileSystemObject(fullPath, asDirectory);
+            return asDirectory ?
+                (IFileSystemObject)new DirectoryInfo(fullPath, null) :
+                (IFileSystemObject)new FileInfo(fullPath, null);
         }
 
         public override DateTimeOffset GetLastAccessTime(string fullPath)
@@ -435,7 +433,7 @@ namespace System.IO
         [System.Security.SecurityCritical]
         private static SafeFileHandle OpenHandle(string fullPath, bool asDirectory)
         {
-            String root = fullPath.Substring(0, PathHelpers.GetRootLength(fullPath));
+            String root = fullPath.Substring(0, PathInternal.GetRootLength(fullPath));
             if (root == fullPath && root[1] == Path.VolumeSeparatorChar)
             {
                 // intentionally not fullpath, most upstack public APIs expose this as path.
@@ -443,7 +441,7 @@ namespace System.IO
             }
 
             Interop.mincore.SECURITY_ATTRIBUTES secAttrs = default(Interop.mincore.SECURITY_ATTRIBUTES);
-            SafeFileHandle handle = Helpers.SafeCreateFile(
+            SafeFileHandle handle = Interop.mincore.SafeCreateFile(
                 fullPath,
                 (int)Interop.mincore.GenericOperations.GENERIC_WRITE,
                 FileShare.ReadWrite | FileShare.Delete,
@@ -486,11 +484,13 @@ namespace System.IO
             if (((FileAttributes)data.fileAttributes & FileAttributes.ReparsePoint) != 0)
                 recursive = false;
 
-            RemoveDirectoryHelper(fullPath, recursive, true);
+            // We want extended syntax so we can delete "extended" subdirectories and files
+            // (most notably ones with trailing whitespace or periods)
+            RemoveDirectoryHelper(PathInternal.AddExtendedPathPrefix(fullPath), recursive, true);
         }
 
         [System.Security.SecurityCritical]  // auto-generated
-        private static void RemoveDirectoryHelper(String fullPath, bool recursive, bool throwOnTopLevelDirectoryNotFound)
+        private static void RemoveDirectoryHelper(string fullPath, bool recursive, bool throwOnTopLevelDirectoryNotFound)
         {
             bool r;
             int errorCode;
@@ -531,7 +531,7 @@ namespace System.IO
                             bool shouldRecurse = (0 == (data.dwFileAttributes & (int)FileAttributes.ReparsePoint));
                             if (shouldRecurse)
                             {
-                                String newFullPath = Path.Combine(fullPath, data.cFileName);
+                                string newFullPath = Path.Combine(fullPath, data.cFileName);
                                 try
                                 {
                                     RemoveDirectoryHelper(newFullPath, recursive, false);
@@ -550,19 +550,22 @@ namespace System.IO
                                 {
                                     // Use full path plus a trailing '\'
                                     String mountPoint = Path.Combine(fullPath, data.cFileName + PathHelpers.DirectorySeparatorCharAsString);
-                                    errorCode = Helpers.DeleteVolumeMountPoint(mountPoint);
-                                    
-                                    if (errorCode != Interop.mincore.Errors.ERROR_SUCCESS && 
-                                        errorCode != Interop.mincore.Errors.ERROR_PATH_NOT_FOUND)
+                                    if (!Interop.mincore.DeleteVolumeMountPoint(mountPoint))
                                     {
-                                        try
+                                         errorCode = Marshal.GetLastWin32Error();
+                                    
+                                        if (errorCode != Interop.mincore.Errors.ERROR_SUCCESS && 
+                                            errorCode != Interop.mincore.Errors.ERROR_PATH_NOT_FOUND)
                                         {
-                                            throw Win32Marshal.GetExceptionForWin32Error(errorCode, data.cFileName);
-                                        }
-                                        catch (Exception e)
-                                        {
-                                            if (ex == null)
-                                                ex = e;
+                                            try
+                                            {
+                                                throw Win32Marshal.GetExceptionForWin32Error(errorCode, data.cFileName);
+                                            }
+                                            catch (Exception e)
+                                            {
+                                                if (ex == null)
+                                                    ex = e;
+                                            }
                                         }
                                     }
                                 }
