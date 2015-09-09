@@ -31,7 +31,6 @@ namespace System.Globalization.Tests
 
         // PosTest3:Return the property Name in RegionInfo object 3
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)]
         public void PosTest3()
         {
             RegionInfo regionInfo = new RegionInfo("US");
@@ -41,7 +40,6 @@ namespace System.Globalization.Tests
 
         // PosTest4:Return the property Name in RegionInfo object 4
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)]
         public void PosTest4()
         {
             RegionInfo regionInfo = new RegionInfo("CN");

@@ -10,7 +10,6 @@ namespace System.Globalization.Tests
     public class RegionInfoCtor2
     {
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest1()
         {
             string name = "en-US";
@@ -19,7 +18,6 @@ namespace System.Globalization.Tests
         }
 
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest2()
         {
             string name = "US";
@@ -28,7 +26,6 @@ namespace System.Globalization.Tests
         }
 
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest3()
         {
             string name = "zh-CN";
@@ -37,7 +34,6 @@ namespace System.Globalization.Tests
         }
 
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest4()
         {
             string name = "CN";
@@ -46,7 +42,6 @@ namespace System.Globalization.Tests
         }
 
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest5()
         {
             string name = "en-IE";
@@ -55,7 +50,6 @@ namespace System.Globalization.Tests
         }
 
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest6()
         {
             string name = "IE";
@@ -65,7 +59,6 @@ namespace System.Globalization.Tests
 
         // NegTest1:the name is not valid region
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void TestInvalidRegion()
         {
             string name = "HELLOWORLD";

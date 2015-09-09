@@ -11,7 +11,6 @@ namespace System.Globalization.Tests
     {
         // PosTest1:Initialize the RegionInfo 1
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest1()
         {
             CultureInfo myCultur = new CultureInfo("en-US");
@@ -22,7 +21,6 @@ namespace System.Globalization.Tests
 
         // PosTest2:Initialize the RegionInfo 2
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest2()
         {
             CultureInfo myCultur = new CultureInfo("zh-CN");
@@ -33,7 +31,6 @@ namespace System.Globalization.Tests
 
         // PosTest3:Initialize the RegionInfo 3
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest3()
         {
             CultureInfo myCultur = new CultureInfo("en-IE");
@@ -44,7 +41,6 @@ namespace System.Globalization.Tests
 
         // PosTest4:Initialize the RegionInfo 4
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)] 
         public void PosTest4()
         {
             CultureInfo myCultur = new CultureInfo("en-GB");

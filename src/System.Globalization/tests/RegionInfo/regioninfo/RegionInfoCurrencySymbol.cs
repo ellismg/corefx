@@ -11,7 +11,6 @@ namespace System.Globalization.Tests
     {
         // PosTest1:Return the CurrencySymbol property in RegionInfo object 1
         [Fact]
-        [ActiveIssue(846, PlatformID.AnyUnix)]
         public void PosTest1()
         {
             CultureInfo myCulture = new CultureInfo("en-US");
