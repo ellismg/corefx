@@ -14,7 +14,7 @@ namespace System.Globalization.Tests
         {
             string name = "en-US";
             RegionInfo myRegInfo = new RegionInfo(name);
-            Assert.False(myRegInfo.Name != name && myRegInfo.Name != "US");
+            Assert.True(myRegInfo.Name == name || myRegInfo.Name == "US");
         }
 
         [Fact]
@@ -30,7 +30,7 @@ namespace System.Globalization.Tests
         {
             string name = "zh-CN";
             RegionInfo myRegInfo = new RegionInfo(name);
-            Assert.False(myRegInfo.Name != name && myRegInfo.Name != "CN");
+            Assert.True(myRegInfo.Name == name || myRegInfo.Name == "CN");
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace System.Globalization.Tests
         {
             string name = "en-IE";
             RegionInfo myRegInfo = new RegionInfo(name);
-            Assert.False(myRegInfo.Name != name && myRegInfo.Name != "IE");
+            Assert.True(myRegInfo.Name == name || myRegInfo.Name == "IE");
         }
 
         [Fact]

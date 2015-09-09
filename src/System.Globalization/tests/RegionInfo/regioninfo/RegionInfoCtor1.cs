@@ -16,7 +16,7 @@ namespace System.Globalization.Tests
             CultureInfo myCultur = new CultureInfo("en-US");
             string culture = myCultur.Name;
             RegionInfo myRegInfo = new RegionInfo(culture);
-            Assert.False(myRegInfo.Name != "en-US" && myRegInfo.Name != "US");
+            Assert.True(myRegInfo.Name == "en-US" || myRegInfo.Name == "US");
         }
 
         // PosTest2:Initialize the RegionInfo 2
@@ -26,7 +26,7 @@ namespace System.Globalization.Tests
             CultureInfo myCultur = new CultureInfo("zh-CN");
             string culture = myCultur.Name;
             RegionInfo myRegInfo = new RegionInfo(culture);
-            Assert.False(myRegInfo.Name != "zh-CN" && myRegInfo.Name != "CN");
+            Assert.True(myRegInfo.Name == "zh-CN" || myRegInfo.Name == "CN");
         }
 
         // PosTest3:Initialize the RegionInfo 3
@@ -36,7 +36,7 @@ namespace System.Globalization.Tests
             CultureInfo myCultur = new CultureInfo("en-IE");
             string culture = myCultur.Name;
             RegionInfo myRegInfo = new RegionInfo(culture);
-            Assert.False(myRegInfo.Name != "en-IE" && myRegInfo.Name != "IE");
+            Assert.True(myRegInfo.Name == "en-IE" || myRegInfo.Name == "IE");
         }
 
         // PosTest4:Initialize the RegionInfo 4
@@ -46,11 +46,12 @@ namespace System.Globalization.Tests
             CultureInfo myCultur = new CultureInfo("en-GB");
             string culture = myCultur.Name;
             RegionInfo myRegInfo = new RegionInfo(culture);
-            Assert.False(myRegInfo.Name != "en-GB" && myRegInfo.Name != "GB");
+            Assert.True(myRegInfo.Name == "en-GB" || myRegInfo.Name == "GB");
         }
 
         // NegTest1:culture specifies neutral culture 1
         [Fact]
+        [ActiveIssue(846, PlatformID.AnyUnix)]
         public void NegTest1()
         {
             CultureInfo myCultur = new CultureInfo("en");

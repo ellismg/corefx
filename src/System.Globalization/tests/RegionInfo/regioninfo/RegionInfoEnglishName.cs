@@ -32,7 +32,7 @@ namespace System.Globalization.Tests
         public void PosTest3()
         {
             RegionInfo regionInfo = new RegionInfo("CN");
-            string strVal = regionInfo.EnglishName;  
+            string strVal = regionInfo.EnglishName;
             Assert.True(strVal == "China" || strVal == "People's Republic of China");
         }
 
