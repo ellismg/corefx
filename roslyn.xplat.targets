@@ -9,6 +9,4 @@
     <DebugSymbols>false</DebugSymbols>
   </PropertyGroup>
 
-  <!-- This target in the build tools partialfacades.targets assumes that a pdb exists. -->
-  <Target Name="FillPartialFacade" />
 </Project>

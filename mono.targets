@@ -24,4 +24,8 @@
   <Target Name="RunTestsForProject">
     <Message Importance="high" Text="Skipping test run pending fix." />
   </Target>
+
+  <!-- GenFacades does not work on mono unless you have added some .NET 4.6 surface area -->
+  <Import Project="$(MSBuildThisFileDirectory)mono.partialfacade.targets" Condition="'$(COREFX_BUILD_PARTIAL_FACADE)' == ''" />
+
 </Project>

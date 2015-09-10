@@ -1,0 +1,7 @@
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <!-- Filling partial facades does not work on mono unless you have added some .NET 4.6 surface area -->
+  <Target Name="FillPartialFacade" />
+
+</Project>
+
