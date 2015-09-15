@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace System.Globalization.Tests
@@ -27,6 +28,16 @@ namespace System.Globalization.Tests
             VerificationHelper(new DateTimeFormatInfo(), "y", true);
             VerificationHelper(new DateTimeFormatInfo(), "Y", true);
             VerificationHelper(new DateTimeFormatInfo(), _generator.GetString(-55, false, 1, 256), true);
+        }
+
+        [Theory]
+        [InlineData("en-US", "MMMM, yyyy", "MMMM yyyy")]
+        [InlineData("es-ES", "MMMM' de 'yyyy", "MMMM 'de' yyyy")]
+        public void TestCultureYearMonth(string cultureName, string windowsExpected, string linuxExpected)
+        {
+            string expected = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? windowsExpected : linuxExpected;
+
+            VerificationHelper(new CultureInfo(cultureName).DateTimeFormat, expected, false);
         }
 
         // NegTest1: ArgumentNullException should be thrown when The property is being set to a null reference

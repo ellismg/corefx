@@ -3,6 +3,7 @@
 
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using Xunit;
 
 namespace System.Globalization.Tests
@@ -26,6 +27,16 @@ namespace System.Globalization.Tests
             VerificationHelper(new DateTimeFormatInfo(), "MM-DD-yyyy", true);
             VerificationHelper(new DateTimeFormatInfo(), "d", true);
             VerificationHelper(new DateTimeFormatInfo(), _generator.GetString(-55, false, 1, 256), true);
+        }
+
+        [Theory]
+        [InlineData("en-US", "M/d/yyyy", "M/d/yyyy")]
+        [InlineData("es-ES", "dd/MM/yyyy", "d/M/yyyy")]
+        public void TestCultureShortDate(string cultureName, string windowsExpected, string linuxExpected)
+        {
+            string expected = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? windowsExpected : linuxExpected;
+
+            VerificationHelper(new CultureInfo(cultureName).DateTimeFormat, expected, false);
         }
 
         // NegTest1: ArgumentNullException should be thrown when The property is being set to a null reference
