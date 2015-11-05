@@ -139,7 +139,7 @@
           "lib/dotnet/System.Security.Principal.dll": {}
         }
       },
-      "System.Security.Principal.Windows/4.0.0-beta-23420": {
+      "System.Security.Principal.Windows/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0",
@@ -307,7 +307,7 @@
           "lib/dotnet/System.Security.Principal.dll": {}
         }
       },
-      "System.Security.Principal.Windows/4.0.0-beta-23420": {
+      "System.Security.Principal.Windows/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0",
@@ -475,7 +475,7 @@
           "lib/dotnet/System.Security.Principal.dll": {}
         }
       },
-      "System.Security.Principal.Windows/4.0.0-beta-23420": {
+      "System.Security.Principal.Windows/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.Runtime": "4.0.0",
@@ -1045,10 +1045,10 @@
         "System.Security.Principal.nuspec"
       ]
     },
-    "System.Security.Principal.Windows/4.0.0-beta-23420": {
+    "System.Security.Principal.Windows/4.0.0-beta-23504": {
       "type": "package",
       "serviceable": true,
-      "sha512": "vpW55QEeC234v+eDhZZS/WCHwKShHsjsnC2a1yAzDI/JHOG098byKFLi6EPTUnLSZbGOb+fnsT/zeAv7Yb9uhQ==",
+      "sha512": "hU0ceSlYTWX211SUgHWrIpK275QXFLYlV6ouoQRCmc7BhjeCh05jnd/tyGfM0U1OGH52pzRGQxnLxtDax9TwOA==",
       "files": [
         "lib/DNXCore50/System.Security.Principal.Windows.dll",
         "lib/net46/System.Security.Principal.Windows.dll",
@@ -1064,8 +1064,8 @@
         "ref/dotnet5.4/zh-hans/System.Security.Principal.Windows.xml",
         "ref/dotnet5.4/zh-hant/System.Security.Principal.Windows.xml",
         "ref/net46/System.Security.Principal.Windows.dll",
-        "System.Security.Principal.Windows.4.0.0-beta-23420.nupkg",
-        "System.Security.Principal.Windows.4.0.0-beta-23420.nupkg.sha512",
+        "System.Security.Principal.Windows.4.0.0-beta-23504.nupkg",
+        "System.Security.Principal.Windows.4.0.0-beta-23504.nupkg.sha512",
         "System.Security.Principal.Windows.nuspec"
       ]
     },

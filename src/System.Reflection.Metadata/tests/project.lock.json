@@ -152,7 +152,7 @@
           "lib/dotnet/System.IO.FileSystem.Primitives.dll": {}
         }
       },
-      "System.IO.MemoryMappedFiles/4.0.0-beta-23420": {
+      "System.IO.MemoryMappedFiles/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO.FileSystem": "4.0.0",
@@ -531,7 +531,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00116": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -558,7 +558,7 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x86": {
-      "runtime.win7.System.IO.MemoryMappedFiles/4.0.0-beta-23420": {
+      "runtime.win7.System.IO.MemoryMappedFiles/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -728,7 +728,7 @@
           "lib/dotnet/System.IO.FileSystem.Primitives.dll": {}
         }
       },
-      "System.IO.MemoryMappedFiles/4.0.0-beta-23420": {
+      "System.IO.MemoryMappedFiles/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO.FileSystem": "4.0.0",
@@ -1107,7 +1107,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00116": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -1134,7 +1134,7 @@
       }
     },
     "DNXCore,Version=v5.0/win7-x64": {
-      "runtime.win7.System.IO.MemoryMappedFiles/4.0.0-beta-23420": {
+      "runtime.win7.System.IO.MemoryMappedFiles/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO": "4.0.10",
@@ -1304,7 +1304,7 @@
           "lib/dotnet/System.IO.FileSystem.Primitives.dll": {}
         }
       },
-      "System.IO.MemoryMappedFiles/4.0.0-beta-23420": {
+      "System.IO.MemoryMappedFiles/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "System.IO.FileSystem": "4.0.0",
@@ -1683,7 +1683,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00116": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -1711,14 +1711,14 @@
     }
   },
   "libraries": {
-    "runtime.win7.System.IO.MemoryMappedFiles/4.0.0-beta-23420": {
+    "runtime.win7.System.IO.MemoryMappedFiles/4.0.0-beta-23504": {
       "type": "package",
       "serviceable": true,
-      "sha512": "ve3rff1K2Kv7Ab5PnUx6id8Cy8AnBwQ0D33hcZyC7+SSY4F+P0K+VNVWC52T1BW0CNj7EyUAqmzC7/AK7XooJQ==",
+      "sha512": "8/h8S2qoVFWzWz620QRBjlCDtQbtdCbssctyESA9aFDjup3uqZEXsRP+I07qnFPlF5kNbh2CAQ/5WPoA6T5ykg==",
       "files": [
         "ref/dotnet/_._",
-        "runtime.win7.System.IO.MemoryMappedFiles.4.0.0-beta-23420.nupkg",
-        "runtime.win7.System.IO.MemoryMappedFiles.4.0.0-beta-23420.nupkg.sha512",
+        "runtime.win7.System.IO.MemoryMappedFiles.4.0.0-beta-23504.nupkg",
+        "runtime.win7.System.IO.MemoryMappedFiles.4.0.0-beta-23504.nupkg.sha512",
         "runtime.win7.System.IO.MemoryMappedFiles.nuspec",
         "runtimes/win7/lib/dotnet5.4/System.IO.MemoryMappedFiles.dll",
         "runtimes/win7/lib/net/_._",
@@ -2042,10 +2042,10 @@
         "System.IO.FileSystem.Primitives.nuspec"
       ]
     },
-    "System.IO.MemoryMappedFiles/4.0.0-beta-23420": {
+    "System.IO.MemoryMappedFiles/4.0.0-beta-23504": {
       "type": "package",
       "serviceable": true,
-      "sha512": "ysR7BeEuX3l7nCJIrjQ1dVbVE/8ERtt4VMLAW2UKuK+8FWtr9NTKsn6dxDhF8QOKbsKp7uUYHukimGaut2RBRw==",
+      "sha512": "eV0KSG/+7WIN/tkcUrYvaqT9LjGRGgWm4Lm43PiMY70GIsreZqeXLo/3lyMytq6ZoHnQW7q7Lu+e7XFOHkwraw==",
       "files": [
         "lib/MonoAndroid10/_._",
         "lib/MonoTouch10/_._",
@@ -2069,8 +2069,8 @@
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
         "runtime.json",
-        "System.IO.MemoryMappedFiles.4.0.0-beta-23420.nupkg",
-        "System.IO.MemoryMappedFiles.4.0.0-beta-23420.nupkg.sha512",
+        "System.IO.MemoryMappedFiles.4.0.0-beta-23504.nupkg",
+        "System.IO.MemoryMappedFiles.4.0.0-beta-23504.nupkg.sha512",
         "System.IO.MemoryMappedFiles.nuspec"
       ]
     },
@@ -2896,14 +2896,14 @@
         "xunit.extensibility.execution.nuspec"
       ]
     },
-    "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+    "xunit.netcore.extensions/1.0.0-prerelease-00116": {
       "type": "package",
       "serviceable": true,
-      "sha512": "rNaXYaJhr7Vh28CjaKZoUgOXf9wIXYXYEyWvdyCr2NgrjTEaQwx+fn/PYD6BSt6orxNjgwrsQdAGzFJrhallQw==",
+      "sha512": "MFXZrqfoDWDMSjmk3OkZjvJXU2XQMzBTZhD3db0CH0HPHF/umZzY5TdTXI94Icu2/1p2VhkV3k63flt3QXqWhQ==",
       "files": [
         "lib/dotnet/Xunit.NetCore.Extensions.dll",
-        "xunit.netcore.extensions.1.0.0-prerelease-00108.nupkg",
-        "xunit.netcore.extensions.1.0.0-prerelease-00108.nupkg.sha512",
+        "xunit.netcore.extensions.1.0.0-prerelease-00116.nupkg",
+        "xunit.netcore.extensions.1.0.0-prerelease-00116.nupkg.sha512",
         "xunit.netcore.extensions.nuspec"
       ]
     }

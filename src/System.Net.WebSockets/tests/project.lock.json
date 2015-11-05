@@ -92,16 +92,16 @@
           "ref/dotnet/System.Linq.Expressions.dll": {}
         }
       },
-      "System.Net.WebSockets/4.0.0-beta-23420": {
+      "System.Net.WebSockets/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.Primitives": "4.0.0",
           "System.Resources.ResourceManager": "4.0.0",
           "System.Runtime": "4.0.20",
-          "System.Threading.Tasks": "4.0.0"
+          "System.Threading.Tasks": "4.0.10"
         },
         "compile": {
-          "ref/dotnet5.1/System.Net.WebSockets.dll": {}
+          "ref/dotnet5.4/System.Net.WebSockets.dll": {}
         },
         "runtime": {
           "lib/dotnet5.4/System.Net.WebSockets.dll": {}
@@ -383,7 +383,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00116": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -499,16 +499,16 @@
           "ref/dotnet/System.Linq.Expressions.dll": {}
         }
       },
-      "System.Net.WebSockets/4.0.0-beta-23420": {
+      "System.Net.WebSockets/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.Primitives": "4.0.0",
           "System.Resources.ResourceManager": "4.0.0",
           "System.Runtime": "4.0.20",
-          "System.Threading.Tasks": "4.0.0"
+          "System.Threading.Tasks": "4.0.10"
         },
         "compile": {
-          "ref/dotnet5.1/System.Net.WebSockets.dll": {}
+          "ref/dotnet5.4/System.Net.WebSockets.dll": {}
         },
         "runtime": {
           "lib/dotnet5.4/System.Net.WebSockets.dll": {}
@@ -790,7 +790,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00116": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -906,16 +906,16 @@
           "ref/dotnet/System.Linq.Expressions.dll": {}
         }
       },
-      "System.Net.WebSockets/4.0.0-beta-23420": {
+      "System.Net.WebSockets/4.0.0-beta-23504": {
         "type": "package",
         "dependencies": {
           "Microsoft.Win32.Primitives": "4.0.0",
           "System.Resources.ResourceManager": "4.0.0",
           "System.Runtime": "4.0.20",
-          "System.Threading.Tasks": "4.0.0"
+          "System.Threading.Tasks": "4.0.10"
         },
         "compile": {
-          "ref/dotnet5.1/System.Net.WebSockets.dll": {}
+          "ref/dotnet5.4/System.Net.WebSockets.dll": {}
         },
         "runtime": {
           "lib/dotnet5.4/System.Net.WebSockets.dll": {}
@@ -1197,7 +1197,7 @@
           "lib/dotnet/xunit.execution.dotnet.dll": {}
         }
       },
-      "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+      "xunit.netcore.extensions/1.0.0-prerelease-00116": {
         "type": "package",
         "dependencies": {
           "System.Diagnostics.Debug": "4.0.10",
@@ -1473,10 +1473,10 @@
         "System.Linq.Expressions.nuspec"
       ]
     },
-    "System.Net.WebSockets/4.0.0-beta-23420": {
+    "System.Net.WebSockets/4.0.0-beta-23504": {
       "type": "package",
       "serviceable": true,
-      "sha512": "bX8ZkxSouAvOLXLlPpl+FO5NArCOhmlI1Y/U4xebkKEjjigrvwmPns3BnyPejdgVrSZ+dQ3pumdWMypHQuOjcQ==",
+      "sha512": "eCrq7MSqRISGhYvHMfdf4KfnE0ia1b1JHOz99OiIcQBfKe1dwXh38dz3QfTE8n8R7HKA77W3W5BExiJ7JKIs4A==",
       "files": [
         "lib/dotnet5.4/System.Net.WebSockets.dll",
         "lib/MonoAndroid10/_._",
@@ -1484,24 +1484,24 @@
         "lib/net46/System.Net.WebSockets.dll",
         "lib/xamarinios10/_._",
         "lib/xamarinmac20/_._",
-        "ref/dotnet5.1/de/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/es/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/fr/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/it/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/ja/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/ko/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/ru/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/System.Net.WebSockets.dll",
-        "ref/dotnet5.1/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/zh-hans/System.Net.WebSockets.xml",
-        "ref/dotnet5.1/zh-hant/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/de/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/es/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/fr/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/it/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/ja/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/ko/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/ru/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/System.Net.WebSockets.dll",
+        "ref/dotnet5.4/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/zh-hans/System.Net.WebSockets.xml",
+        "ref/dotnet5.4/zh-hant/System.Net.WebSockets.xml",
         "ref/MonoAndroid10/_._",
         "ref/MonoTouch10/_._",
         "ref/net46/System.Net.WebSockets.dll",
         "ref/xamarinios10/_._",
         "ref/xamarinmac20/_._",
-        "System.Net.WebSockets.4.0.0-beta-23420.nupkg",
-        "System.Net.WebSockets.4.0.0-beta-23420.nupkg.sha512",
+        "System.Net.WebSockets.4.0.0-beta-23504.nupkg",
+        "System.Net.WebSockets.4.0.0-beta-23504.nupkg.sha512",
         "System.Net.WebSockets.nuspec"
       ]
     },
@@ -2125,14 +2125,14 @@
         "xunit.extensibility.execution.nuspec"
       ]
     },
-    "xunit.netcore.extensions/1.0.0-prerelease-00108": {
+    "xunit.netcore.extensions/1.0.0-prerelease-00116": {
       "type": "package",
       "serviceable": true,
-      "sha512": "rNaXYaJhr7Vh28CjaKZoUgOXf9wIXYXYEyWvdyCr2NgrjTEaQwx+fn/PYD6BSt6orxNjgwrsQdAGzFJrhallQw==",
+      "sha512": "MFXZrqfoDWDMSjmk3OkZjvJXU2XQMzBTZhD3db0CH0HPHF/umZzY5TdTXI94Icu2/1p2VhkV3k63flt3QXqWhQ==",
       "files": [
         "lib/dotnet/Xunit.NetCore.Extensions.dll",
-        "xunit.netcore.extensions.1.0.0-prerelease-00108.nupkg",
-        "xunit.netcore.extensions.1.0.0-prerelease-00108.nupkg.sha512",
+        "xunit.netcore.extensions.1.0.0-prerelease-00116.nupkg",
+        "xunit.netcore.extensions.1.0.0-prerelease-00116.nupkg.sha512",
         "xunit.netcore.extensions.nuspec"
       ]
     }
