@@ -16,6 +16,9 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' " />
   <!-- Compiled Source Files -->
   <ItemGroup>
+    <Compile Include="InsertionSort.cs" />
+    <Compile Include="IntroSort.cs" />
+    <Compile Include="Sort.cs" />
   </ItemGroup>
   <!-- Resource files -->
   <ItemGroup>
