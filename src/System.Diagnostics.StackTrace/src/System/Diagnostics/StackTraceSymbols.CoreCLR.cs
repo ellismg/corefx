@@ -17,7 +17,7 @@ namespace System.Diagnostics
 {
     public class StackTraceSymbols : IDisposable
     {
-        Dictionary<IntPtr, Tuple<MetadataReaderProvider, MetadataReader>> _readerCache;
+        private readonly Dictionary<IntPtr, Tuple<MetadataReaderProvider, MetadataReader>> _readerCache;
 
         /// <summary>
         /// Create an instance of this class.
@@ -126,25 +126,22 @@ namespace System.Diagnostics
                 Guid guid;
 
                 string pdbName = GetPdbPathFromPeStream(assemblyPath, loadedPeAddress, loadedPeSize, out age, out guid, out stamp);
-                if (pdbName != null)
+                if (pdbName != null && File.Exists(pdbName))
                 {
-                    if (File.Exists(pdbName))
+                    Stream pdbStream = File.OpenRead(pdbName);
+
+                    provider = MetadataReaderProvider.FromPortablePdbStream(pdbStream);
+                    MetadataReader rdr = provider.GetMetadataReader();
+
+                    // Validate that the PDB matches the assembly version
+                    if (age == 1 && IdEquals(rdr.DebugMetadataHeader.Id, guid, stamp))
                     {
-                        Stream pdbStream = File.OpenRead(pdbName);
-
-                        provider = MetadataReaderProvider.FromPortablePdbStream(pdbStream);
-                        MetadataReader rdr = provider.GetMetadataReader();
-
-                        // Validate that the PDB matches the assembly version
-                        if (age == 1 && IdEquals(rdr.DebugMetadataHeader.Id, guid, stamp))
-                        {
-                            reader = rdr;
-                        }
-                        else
-                        {
-                            provider.Dispose();
-                            provider = null;
-                        }
+                        reader = rdr;
+                    }
+                    else
+                    {
+                        provider.Dispose();
+                        provider = null;
                     }
                 }
             }
@@ -159,7 +156,7 @@ namespace System.Diagnostics
 
             if (reader != null && loadedPeAddress != IntPtr.Zero)
             {
-                _readerCache.Add(loadedPeAddress, new Tuple<MetadataReaderProvider, MetadataReader>(provider, reader));
+                _readerCache.Add(loadedPeAddress, Tuple.Create(provider, reader));
             }
 
             return reader;
@@ -181,7 +178,8 @@ namespace System.Diagnostics
         /// </remarks>
         private static unsafe string GetPdbPathFromPeStream(string assemblyPath, IntPtr loadedPeAddress, int loadedPeSize, out int age, out Guid guid, out uint stamp)
         {
-            if (File.Exists(assemblyPath)) {
+            if (File.Exists(assemblyPath))
+            {
                 Stream peStream = File.OpenRead(assemblyPath);
 
                 using (PEReader peReader = new PEReader(peStream))
