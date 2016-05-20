@@ -35,13 +35,14 @@
   <ItemGroup Condition="'$(TargetGroup)' == ''">  
     <Compile Include="System\Diagnostics\StackTraceSymbols.CoreCLR.cs" />  
     <ProjectReference Include="..\..\System.Collections\src\System.Collections.csproj" />  
-    <ProjectReference Include="..\..\System.Threading.Overlapped\src\System.Threading.Overlapped.csproj" />  
+    <ProjectReference Include="..\..\System.Diagnostics.Debug\src\System.Diagnostics.Debug.csproj">
+      <OSGroup>Windows_NT</OSGroup>
+    </ProjectReference>  
     <ProjectReference Include="..\..\System.IO\src\System.IO.csproj" />  
-    <ProjectReference Include="..\..\System.IO.FileSystem\src\System.IO.FileSystem.csproj" />  
-    <ProjectReference Include="..\..\System.IO.FileSystem.Primitives\src\System.IO.FileSystem.Primitives.csproj" />  
     <ProjectReference Include="..\..\System.Runtime\src\System.Runtime.csproj" />  
     <ProjectReference Include="..\..\System.Runtime.Extensions\src\System.Runtime.Extensions.csproj">  
-      <Aliases>SRE</Aliases>  
+      <Aliases>SRE</Aliases>
+      <OSGroup>Windows_NT</OSGroup>
     </ProjectReference>  
   </ItemGroup>  
   <ItemGroup Condition="'$(TargetGroup)'!='netcore50aot'">
