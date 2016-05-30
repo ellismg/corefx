@@ -94,10 +94,15 @@ namespace System.Net.Sockets.Tests
             }
         }
 
+        private static bool IsNotOSXOrFedora23()
+        {
+            return !PlatformDetection.IsOSX && !PlatformDetection.IsFedora23;
+        }
+
         [Theory]
         [InlineData(0)] // Any
         [InlineData(1)] // Loopback
-        [PlatformSpecific(~PlatformID.OSX)] // Receive times out on loopback interface
+        [ConditionalTheory(nameof(IsNotOSXOrFedora23))] // Receive times out on loopback interface
         public void MulticastInterface_Set_ValidIndex_Succeeds(int interfaceIndex)
         {
             IPAddress multicastAddress = IPAddress.Parse("239.1.2.3");
