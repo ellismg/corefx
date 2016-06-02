@@ -231,6 +231,21 @@ namespace System.Diagnostics.Tests
             }
         }
 
+        [Fact]
+        public void NullEnvironmentValuesAreTreatedAsEmpty()
+        {
+            ProcessStartInfo psi = new ProcessStartInfo();
+            psi.Environment.Clear();
+            psi.Environment["AValueSetToNull"] = null;
+
+            RemoteInvoke(() => 
+            {
+                Assert.Equal("", Environment.GetEnvironmentVariable("AValueSetToNull"));
+
+                return SuccessExitCode;
+            }, new RemoteInvokeOptions() { StartInfo = psi } ).Dispose();            
+        }
+
         [PlatformSpecific(PlatformID.Windows)] // UseShellExecute currently not supported on Windows
         [Fact]
         public void TestUseShellExecuteProperty_SetAndGet_Windows()
